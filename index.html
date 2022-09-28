@@ -1,0 +1,288 @@
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sorteio cadastro</title>
+</head>
+
+<body>
+    <section>
+        <div>
+            <img class="logo" src="/assets/logo2.png" alt="" />
+        </div>
+
+        <form id="subscribeForm" class="form">
+            <div class="title">Seja Bem Vindo!</div>
+            <div class="subtitle">
+                Preencha os dados e cadastre-se para participar do sorteio dia 14/10
+            </div>
+            <div class="input-container ic1">
+                <input required id="firstname" class="input input-field" type="text" name="name" />
+                <div class="cut"></div>
+                <label for="firstname" class="placeholder">Nome</label>
+            </div>
+            <div class="input-container ic2">
+                <input required type="text" id="phone" class="input input-field" name="phone"
+                    onkeypress="mask(this, mphone);" onblur="mask(this, mphone);" />
+                <div class="cut"></div>
+                <label for="telephone" class="placeholder">Telefone</label>
+            </div>
+            <div class="input-container ic2">
+                <input required type="text" id="cpf" minlength="14" maxlength="14" class="input input-field" name="cpf"
+                    onkeypress="maskCPF(this, mCPF);" onblur="maskCPF(this, mCPF);" />
+                <div class="cut"></div>
+                <label for="CPF" class="placeholder">CPF</label>
+            </div>
+            <div class="input-container ic2">
+                <label class="labelInput" for="selecao-arquivo">
+                    Clique aqui para inserir sua foto de perfil!</label>
+                <input id="selecao-arquivo" type="file" />
+            </div>
+            <button type="submit" class="submit">Cadastre-se</button>
+        </form>
+    </section>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js'
+        import { getFirestore, collection, doc, setDoc } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js'
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAm1YgiZU6Z65LZWJ1Bq2Kc5ficq4y-An0",
+            authDomain: "leadbase-leads.firebaseapp.com",
+            projectId: "leadbase-leads",
+            storageBucket: "leadbase-leads.appspot.com",
+            messagingSenderId: "16583460829",
+            appId: "1:16583460829:web:83f164da92ba611edfd834",
+            measurementId: "G-3W4598CYSL",
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        document
+            .querySelector("#subscribeForm")
+            .addEventListener("submit", function (evt) {
+                evt.preventDefault();
+
+                const formData = new FormData(evt.target);
+                const formProps = Object.fromEntries(formData);
+
+                console.log(formProps)
+
+                setDoc(doc(db, "leads", formProps.cpf), formProps)
+
+                alert("dados enviados!")
+
+                document.querySelectorAll('.input-field').forEach(el => {
+                    el.value = ''
+                })
+            });
+    </script>
+
+</body>
+
+<script>
+
+    function mask(o, f) {
+        setTimeout(function () {
+            var v = mphone(o.value);
+            if (v != o.value) {
+                o.value = v;
+            }
+        }, 1);
+    }
+
+    function mphone(v) {
+        var r = v.replace(/\D/g, "");
+        r = r.replace(/^0/, "");
+        if (r.length > 10) {
+            r = r.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+        } else if (r.length > 5) {
+            r = r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+        } else if (r.length > 2) {
+            r = r.replace(/^(\d\d)(\d{0,5})/, "($1) $2");
+        } else {
+            r = r.replace(/^(\d*)/, "($1");
+        }
+        return r;
+    }
+
+    function maskCPF(o, f) {
+        setTimeout(function () {
+            var v = mCPF(o.value);
+            if (v != o.value) {
+                o.value = v;
+            }
+        }, 1);
+    }
+
+    function mCPF(cpf) {
+        var num = cpf.replace(/[^\d]/g, "");
+        var len = num.length;
+
+        if (len <= 6) {
+            cpf = num.replace(/(\d{3})(\d{1,3})/g, "$1.$2");
+        } else if (len <= 9) {
+            cpf = num.replace(/(\d{3})(\d{3})(\d{1,3})/g, "$1.$2.$3");
+        } else {
+            cpf = num.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/g, "$1.$2.$3-$4");
+        }
+        return cpf;
+    }
+</script>
+
+<style>
+    body {
+        align-items: center;
+        background-color: #ffe5d0;
+        display: flex;
+        justify-content: center;
+        height: 90vh;
+    }
+
+    .form {
+        background-color: #ed9488;
+        border-radius: 20px;
+        box-sizing: border-box;
+        height: 500px;
+        padding: 20px;
+        width: 520px;
+    }
+
+    .title {
+        color: #ffe5d0;
+        font-family: sans-serif;
+        font-size: 36px;
+        font-weight: 600;
+        margin-top: 30px;
+    }
+
+    .logo {
+        height: 60px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 15px;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .labelInput {
+        padding: 1px 100px;
+        width: 200px;
+        background-color: #ffe5d0;
+
+        color: #ed9488;
+        text-transform: uppercase;
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-top: 10px;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+
+    .subtitle {
+        color: #ffe5d0;
+        font-family: sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 10px;
+    }
+
+    .input-container {
+        height: 50px;
+        position: relative;
+        width: 100%;
+    }
+
+    .ic1 {
+        margin-top: 40px;
+    }
+
+    .ic2 {
+        margin-top: 30px;
+    }
+
+    .input {
+        background-color: #ffe5d0;
+        border-radius: 12px;
+        border: 0;
+        box-sizing: border-box;
+        color: #65657b;
+        font-size: 18px;
+        height: 100%;
+        outline: 0;
+        padding: 4px 20px 0;
+        width: 100%;
+    }
+
+    .cut {
+        background-color: #ed9488;
+        border-radius: 10px;
+        height: 20px;
+        left: 20px;
+        position: absolute;
+        top: -20px;
+        transform: translateY(0);
+        transition: transform 200ms;
+        width: 76px;
+    }
+
+    .cut-short {
+        width: 50px;
+    }
+
+    .input:focus~.cut,
+    .input:not(:placeholder-shown)~.cut {
+        transform: translateY(8px);
+    }
+
+    .placeholder {
+        color: #65657b;
+        font-family: sans-serif;
+        left: 20px;
+        line-height: 14px;
+        pointer-events: none;
+        position: absolute;
+        transform-origin: 0 50%;
+        transition: transform 200ms, color 200ms;
+        top: 20px;
+    }
+
+    .input:focus~.placeholder,
+    .input:not(:placeholder-shown)~.placeholder {
+        transform: translateY(-30px) translateX(10px) scale(0.75);
+    }
+
+    .input:not(:placeholder-shown)~.placeholder {
+        color: #808097;
+    }
+
+    .input:focus~.placeholder {
+        color: #dc2f55;
+    }
+
+    .submit {
+        background-color: #ed9488;
+        border-radius: 12px;
+        border: 0;
+        box-sizing: border-box;
+        color: #eee;
+        cursor: pointer;
+        font-size: 18px;
+        height: 50px;
+        margin-top: 50px;
+        outline: 0;
+        text-align: center;
+        width: 100%;
+    }
+
+    .submit:active {
+        background-color: #06b;
+    }
+</style>
