@@ -25,15 +25,16 @@
                     onkeypress="mask(this, mphone);" onblur="mask(this, mphone);" />
             </div>
             <div class="input-container ic2">
-                <input required type="text" id="cpf" minlength="14" maxlength="14" placeholder="CPF" class="input input-field" name="cpf"
-                    onkeypress="maskCPF(this, mCPF);" onblur="maskCPF(this, mCPF);" />
+                <input required type="text" id="cpf" minlength="14" maxlength="14" placeholder="CPF"
+                    class="input input-field" name="cpf" onkeypress="maskCPF(this, mCPF);"
+                    onblur="maskCPF(this, mCPF);" />
             </div>
             <div class="input-container ic2">
                 <label class="labelInput" for="selecao-arquivo">
                     Anexar foto da nota fiscal!</label>
                 <input id="selecao-arquivo" type="file" />
             </div>
-            <a href="../agradecimento.html"><button type="submit" class="submit">Cadastre-se</button></a>
+            <button type="submit" class="submit">Cadastre-se</button>
         </form>
     </section>
 
@@ -64,11 +65,13 @@
 
                 setDoc(doc(db, "leads", formProps.cpf), formProps)
 
-                alert("dados enviados!")
-
                 document.querySelectorAll('.input-field').forEach(el => {
                     el.value = ''
                 })
+
+                setTimeout(() => {
+                    window.location.href = '/agradecimento/index.html'
+                }, 800)
             });
     </script>
 
@@ -126,112 +129,112 @@
 
 <style>
     body {
-    align-items: center;
-    background-color: #ffe5d0;
-    display: flex;
-    justify-content: center;
-    height: 90vh;
+        align-items: center;
+        background-color: #ffe5d0;
+        display: flex;
+        justify-content: center;
+        height: 90vh;
     }
 
     .form {
-    background-color:#ed9488;
-    border-radius: 20px;
-    box-sizing: border-box;
-    height: 500px;
-    padding: 20px;
-    width: 520px;
+        background-color: #ed9488;
+        border-radius: 20px;
+        box-sizing: border-box;
+        height: 500px;
+        padding: 20px;
+        width: 520px;
     }
 
     .title {
-    color: #ffe5d0;
-    font-family: sans-serif;
-    font-size: 36px;
-    font-weight: 600;
-    margin-top: 30px;
+        color: #ffe5d0;
+        font-family: sans-serif;
+        font-size: 36px;
+        font-weight: 600;
+        margin-top: 30px;
     }
 
     .logo {
-    height: 60px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 15px;
+        height: 60px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        margin-bottom: 15px;
     }
 
     input[type="file"] {
-    display: none;
+        display: none;
     }
 
     .labelInput {
-    padding: 16px 130px;
-    width: 200px;
-    background-color: #ffe5d0;
+        padding: 16px 130px;
+        width: 200px;
+        background-color: #ffe5d0;
 
-    color: #65657b;
-    text-transform: uppercase;
-    text-align: center;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: sans-serif;
-    font-size: 12px;
-    margin-top: 10px;
-    border-radius: 20px;
-    cursor: pointer;
+        color: #65657b;
+        text-transform: uppercase;
+        text-align: center;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        font-family: sans-serif;
+        font-size: 12px;
+        margin-top: 10px;
+        border-radius: 20px;
+        cursor: pointer;
     }
 
     .subtitle {
-    color: #ffffff;
-    font-family: sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 10px;
+        color: #ffffff;
+        font-family: sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        margin-top: 10px;
     }
 
     .input-container {
-    height: 50px;
-    position: relative;
-    width: 100%;
+        height: 50px;
+        position: relative;
+        width: 100%;
     }
 
     .ic1 {
-    margin-top: 40px;
+        margin-top: 40px;
     }
 
     .ic2 {
-    margin-top: 30px;
+        margin-top: 30px;
     }
 
     .input {
-    background-color: #ffe5d0;
-    border-radius: 12px;
-    border: 0;
-    box-sizing: border-box;
-    color: #65657b;
-    font-size: 18px;
-    height: 100%;
-    outline: 0;
-    padding: 4px 20px 0;
-    width: 100%;
+        background-color: #ffe5d0;
+        border-radius: 12px;
+        border: 0;
+        box-sizing: border-box;
+        color: #65657b;
+        font-size: 18px;
+        height: 100%;
+        outline: 0;
+        padding: 4px 20px 0;
+        width: 100%;
     }
 
     .submit {
-    background-color: #4B59A0;
-    border-radius: 12px;
-    border: 0;
-    box-sizing: border-box;
-    color: #eee;
-    cursor: pointer;
-    font-size: 18px;
-    height: 50px;
-    margin-top: 50px;
-    outline: 0;
-    text-align: center;
-    width: 100%;
+        background-color: #4B59A0;
+        border-radius: 12px;
+        border: 0;
+        box-sizing: border-box;
+        color: #eee;
+        cursor: pointer;
+        font-size: 18px;
+        height: 50px;
+        margin-top: 50px;
+        outline: 0;
+        text-align: center;
+        width: 100%;
     }
 
     .submit:active {
-    background-color: #06b;
+        background-color: #06b;
     }
 
     @media (max-width: 810px) {
@@ -239,7 +242,8 @@
             height: 520px;
             width: 300px;
         }
-        .labelInput{
+
+        .labelInput {
             height: 25px;
             position: relative;
             text-align: center;
@@ -247,13 +251,11 @@
             padding: 2px 30px;
             font-size: 10px;
         }
-            
-        .submit{
+
+        .submit {
             width: 50%;
             margin-left: 25%;
         }
-        
+
     }
-
-
 </style>
