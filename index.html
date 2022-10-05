@@ -34,7 +34,7 @@
                 <label class="labelInput" for="selecao-arquivo">
                     Anexar foto da nota fiscal!
                 </label>
-                <input id="selecao-arquivo" type="file" required name="anexo" />
+                <input id="selecao-arquivo" type="file" required />
             </div>
             <button type="submit" class="submit">Cadastre-se</button>
         </form>
@@ -42,12 +42,7 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-        import {
-            getFirestore,
-            collection,
-            doc,
-            setDoc,
-        } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+        import { getFirestore, collection, doc, setDoc, } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
 
         const toBase64 = (file) =>
             new Promise((resolve, reject) => {
@@ -93,14 +88,16 @@
                 toBase64(file)
                     .then((base64Image) => {
                         formProps.image = base64Image;
-                        setDoc(doc(db, "leads", formProps.cpf), formProps).then(() => {
-                            finishSubmit();
-                        });
+                        setDoc(doc(db, "leads", formProps.cpf), formProps)
+                            .then(() => {
+                                finishSubmit();
+                            });
                     })
                     .catch(() => {
-                        setDoc(doc(db, "leads", formProps.cpf), formProps).then(() => {
-                            finishSubmit();
-                        });
+                        setDoc(doc(db, "leads", formProps.cpf), formProps)
+                            .then(() => {
+                                finishSubmit();
+                            });
                     });
             });
     </script>
