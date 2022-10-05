@@ -31,7 +31,7 @@
                     onblur="maskCPF(this, mCPF);" />
             </div>
             <div class="input-container ic2">
-                <label class="labelInput" for="selecao-arquivo">
+                <label id="labelInput" class="labelInput" for="selecao-arquivo">
                     Anexar foto da nota fiscal!
                 </label>
                 <input id="selecao-arquivo" type="file" required />
@@ -104,6 +104,11 @@
 </body>
 
 <script>
+
+    document.querySelector("#selecao-arquivo").onchange = function(){
+    document.querySelector("#labelInput").textContent = 'Foto anexada com sucesso!';
+    }
+
     function mask(o, f) {
         setTimeout(function () {
             var v = mphone(o.value);
