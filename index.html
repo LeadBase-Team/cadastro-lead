@@ -42,6 +42,14 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js'
         import { getFirestore, collection, doc, setDoc } from 'https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js'
 
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        })
+
         const firebaseConfig = {
             apiKey: "AIzaSyAm1YgiZU6Z65LZWJ1Bq2Kc5ficq4y-An0",
             authDomain: "leadbase-leads.firebaseapp.com",
@@ -63,22 +71,30 @@
                 const formData = new FormData(evt.target);
                 const formProps = Object.fromEntries(formData);
 
-                setDoc(doc(db, "leads", formProps.cpf), formProps)
+                const file = document.querySelector('#selecao-arquivo').files[0];
 
-                document.querySelectorAll('.input-field').forEach(el => {
-                    el.value = ''
-                })
+                toBase64(file)
+                    .then((base64Image) => {
+                        formProps.image = base64Image
+                        setDoc(doc(db, "leads", formProps.cpf), formProps)
+                    })
+                    .catch(() => {
+                        setDoc(doc(db, "leads", formProps.cpf), formProps)
+                    })
+                    .finally(() => {
+                        document.querySelectorAll('.input-field').forEach(el => {
+                            el.value = ''
+                        })
 
-                setTimeout(() => {
-                    window.location.href = '/agradecimento/index.html'
-                }, 800)
+                        setTimeout(() => {
+                            window.location.href = '/agradecimento/index.html'
+                        }, 1000)
+                    })
             });
     </script>
-
 </body>
 
 <script>
-
     function mask(o, f) {
         setTimeout(function () {
             var v = mphone(o.value);
