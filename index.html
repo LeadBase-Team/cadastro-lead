@@ -8,7 +8,6 @@
 
 <body>
     <section>
-
         <div>
             <img class="logo" src="/assets/logo2.png" alt="" />
         </div>
@@ -164,19 +163,19 @@
         background-color: #ffe5d0;
         display: flex;
         justify-content: center;
-        height: 90vh;
+        min-height: 100vh;
+        padding-bottom: 50px;
     }
 
     .form {
-        background-color: #ed9488;
-        border-radius: 20px;
         box-sizing: border-box;
-        height: 500px;
-        width: 520px;
+        max-width: 520px;
     }
 
     .formContent {
         padding: 20px;
+        background-color: #ed9488;
+        border-radius: 20px;
     }
 
     .title {
@@ -278,7 +277,6 @@
 
     @media (max-width: 810px) {
         .form {
-            height: 525px;
             width: 95%;
             margin: 0px auto;
         }
