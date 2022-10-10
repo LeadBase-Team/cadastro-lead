@@ -2,6 +2,7 @@
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
+  <link rel="stylesheet" href="/style.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Cadastro Sorteio - Pelin</title>
 </head>
@@ -55,10 +56,10 @@
           />
         </div>
         <div class="input-container ic2">
-          <label class="labelInput" for="selecao-arquivo">
+          <label class="labelInput" for="selecaoArquivo">
             Anexar foto da nota fiscal!
           </label>
-          <input id="selecao-arquivo" type="file" accept="image/*" required />
+          <input id="selecaoArquivo" type="file" accept="image/*" required />
         </div>
       </div>
       <button type="submit" class="submit">
@@ -101,6 +102,7 @@
         el.value = "";
       });
       document.querySelector("#loading").classList.add("hide");
+      document.querySelector("#labelFileName").textContent = "";
     };
 
     const saveData = async (data) => {
@@ -146,7 +148,7 @@
           createdAt: new Date(),
         };
 
-        const file = document.querySelector("#selecao-arquivo").files[0];
+        const file = document.querySelector("#selecaoArquivo").files[0];
         const fileName = parseCpf(formProps.cpf);
 
         uploadFile(file, fileName)
@@ -207,197 +209,3 @@
     return cpf;
   }
 </script>
-<style>
-  body {
-    align-items: center;
-    background-color: #ffe5d0;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-    padding-bottom: 50px;
-  }
-
-  .form {
-    box-sizing: border-box;
-    max-width: 520px;
-  }
-
-  .formContent {
-    padding: 20px;
-    background-color: #ed9488;
-    border-radius: 20px;
-  }
-
-  .title {
-    color: #ffe5d0;
-    font-family: sans-serif;
-    font-size: 36px;
-    font-weight: 600;
-    margin-top: 30px;
-  }
-
-  .logo {
-    height: 60px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 15px;
-  }
-
-  input[type="file"] {
-    display: none;
-  }
-
-  .labelInput {
-    padding: 16px 130px;
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #ffe5d0;
-    color: #65657b;
-    text-transform: uppercase;
-    text-align: center;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    font-family: sans-serif;
-    font-size: 12px;
-    margin-top: 10px;
-    margin-left: 0px;
-    margin-right: 0px;
-    border-radius: 20px;
-    cursor: pointer;
-  }
-
-  .subtitle {
-    color: #ffffff;
-    font-family: sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    margin-top: 10px;
-  }
-
-  .input-container {
-    height: 50px;
-    position: relative;
-    width: 100%;
-  }
-
-  .ic1 {
-    margin-top: 40px;
-  }
-
-  .ic2 {
-    margin-top: 30px;
-  }
-
-  .input {
-    background-color: #ffe5d0;
-    border-radius: 12px;
-    border: 0;
-    box-sizing: border-box;
-    color: #65657b;
-    font-size: 18px;
-    height: 100%;
-    outline: 0;
-    padding: 4px 20px 0;
-    width: 100%;
-  }
-
-  .submit {
-    background-color: #4b59a0;
-    border-radius: 12px;
-    border: 0;
-    box-sizing: border-box;
-    color: #eee;
-    cursor: pointer;
-    font-size: 18px;
-    height: 50px;
-    margin-top: 35px;
-    outline: 0;
-    text-align: center;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .submit:active {
-    background-color: #06b;
-  }
-
-  @media (max-width: 810px) {
-    .form {
-      width: 95%;
-      margin: 0px auto;
-    }
-
-    .labelInput {
-      text-align: center;
-      width: 100%;
-      padding: 15px 0px;
-      font-size: 10px;
-      margin-bottom: 10px;
-    }
-
-    .submit {
-      width: 100%;
-      margin-bottom: 10%;
-    }
-  }
-
-  /* loading */
-  #loading {
-    margin-left: 5px;
-  }
-
-  .lds-ring {
-    display: inline-block;
-    position: relative;
-    width: 20px;
-    height: 20px;
-  }
-
-  .hide {
-    display: none !important;
-  }
-
-  .lds-ring div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    margin: 2px;
-    border: 2px solid #fff;
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #fff transparent transparent transparent;
-  }
-
-  .lds-ring div:nth-child(1) {
-    animation-delay: -0.45s;
-  }
-
-  .lds-ring div:nth-child(2) {
-    animation-delay: -0.3s;
-  }
-
-  .lds-ring div:nth-child(3) {
-    animation-delay: -0.15s;
-  }
-
-  @keyframes lds-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  button:disabled,
-  button[disabled] {
-    opacity: 0.7;
-  }
-</style>
