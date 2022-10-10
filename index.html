@@ -62,6 +62,11 @@
           <input id="selecaoArquivo" type="file" accept="image/*" required />
         </div>
       </div>
+
+      <div class="imagePreviewContent">
+        <img id="imagePreview" src="" alt="image preview" />
+      </div>
+
       <button type="submit" class="submit">
         Cadastre-se
         <div id="loading" class="hide">
@@ -102,7 +107,6 @@
         el.value = "";
       });
       document.querySelector("#loading").classList.add("hide");
-      document.querySelector("#labelFileName").textContent = "";
     };
 
     const saveData = async (data) => {
@@ -161,6 +165,18 @@
           .finally(() => {
             saveData(formProps);
           });
+      });
+
+    document
+      .querySelector("#selecaoArquivo")
+      .addEventListener("change", function () {
+        if (!this.files.length) return false;
+        const file = this.files[0];
+        if (file) {
+          const imagePreview = document.querySelector("#imagePreview");
+          imagePreview.style.display = "block";
+          imagePreview.src = URL.createObjectURL(file);
+        }
       });
   </script>
 </body>
