@@ -58,7 +58,16 @@
           <label class="labelInput" for="selecao-arquivo">
             Anexar foto da nota fiscal!
           </label>
-          <input id="selecao-arquivo" type="file" accept="image/*" required />
+          <input name="image" id="selecao-arquivo" type="file" required onchange="updatePreview(this, 'image-preview')" />
+        </div>
+        <div class="photo-preview">
+                <div class="text-center">
+                    <img id="image-preview" 
+                    src="/assets/sem-foto.gif"
+                    style="width:70px; height: 70px; border-radius: 50%;"
+                    class="rounded rounded-circle" alt="placeholder">
+                </div>
+        </div>
         </div>
       </div>
       <button type="submit" class="submit">
@@ -186,6 +195,18 @@
     }
     return r;
   }
+
+  function updatePreview(input, target) {
+        let file = input.files[0];
+        let reader = new FileReader();
+
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            let img = document.getElementById(target);
+            img.src = reader.result;
+        }
+    }
+
   function maskCPF(o, f) {
     setTimeout(function () {
       var v = mCPF(o.value);
@@ -325,6 +346,13 @@
     background-color: #06b;
   }
 
+  .photo-preview{
+        margin-top: 15px;
+        margin-left: 44%;
+        margin-bottom: 10px;
+    }
+
+
   @media (max-width: 810px) {
     .form {
       width: 95%;
@@ -343,6 +371,7 @@
       width: 100%;
       margin-bottom: 10%;
     }
+
   }
 
   /* loading */
