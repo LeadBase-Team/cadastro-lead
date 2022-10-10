@@ -33,7 +33,15 @@
                 <label class="labelInput" for="selecao-arquivo">
                     Anexar foto da nota fiscal!
                 </label>
-                <input id="selecao-arquivo" type="file" required />
+                <input name="image" id="selecao-arquivo" type="file" required onchange="updatePreview(this, 'image-preview')" />
+            </div>
+            <div class="input-container ic3">
+                    <div class="text-center">
+                        <img id="image-preview" 
+                             src="C:\Users\vinyf\OneDrive\Documentos\GitHub\cadastro-lead1\assets\sem-foto.gif"
+                             style="width:70px; height: 70px; border-radius: 50%;"
+                             class="rounded rounded-circle" alt="placeholder">
+                    </div>
             </div>
             <button type="submit" class="submit">Cadastre-se</button>
         </form>
@@ -127,6 +135,17 @@
             }
         }, 1);
     }
+    function updatePreview(input, target) {
+        let file = input.files[0];
+        let reader = new FileReader();
+        
+        reader.readAsDataURL(file);
+        reader.onload = function () {
+            let img = document.getElementById(target);
+            // can also use "this.result"
+            img.src = reader.result;
+        }
+    }
     function mCPF(cpf) {
         var num = cpf.replace(/[^\d]/g, "");
         var len = num.length;
@@ -153,7 +172,7 @@
         background-color: #ed9488;
         border-radius: 20px;
         box-sizing: border-box;
-        height: 500px;
+        height: 580px;
         padding: 20px;
         width: 520px;
     }
@@ -217,6 +236,11 @@
         margin-top: 30px;
     }
 
+    .ic3{
+        margin-top: 15px;
+        margin-left: 43%;
+    }
+
     .input {
         background-color: #ffe5d0;
         border-radius: 12px;
@@ -239,7 +263,7 @@
         cursor: pointer;
         font-size: 18px;
         height: 50px;
-        margin-top: 50px;
+        margin-top: 65px;
         outline: 0;
         text-align: center;
         width: 100%;
@@ -249,9 +273,9 @@
         background-color: #06b;
     }
 
-    @media (max-width: 810px) {
+    @media (max-width: 810px) and (min-width: 380px) {
         .form {
-            height: 525px;
+            height: 625px;
             width: 300px;
         }
 
@@ -269,5 +293,39 @@
             margin-left: 25%;
             margin-bottom: 10%;
         }
+
+        .ic3{
+            margin-left: 37%;
+        }
+    }
+
+    @media (max-width: 379px) {
+        .logo{
+            margin-top: 120px;
+        }
+        .form {
+            height: 625px;
+            width: 300px;
+        }
+
+        .labelInput {
+            height: 25px;
+            position: relative;
+            text-align: center;
+            width: 50%;
+            padding: 2px 30px;
+            font-size: 10px;
+        }
+
+        .submit {
+            width: 50%;
+            margin-left: 25%;
+            margin-bottom: 10%;
+        }
+
+        .ic3{
+            margin-left: 37%;
+        }
+        
     }
 </style>
