@@ -1,353 +1,403 @@
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cadastro Sorteio - Pelin</title>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <link rel="icon" type="image/x-icon" href="/assets/logo.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro Sorteio - Pelin</title>
 </head>
 
 <body>
-    <section>
-        <div>
-            <img class="logo" src="/assets/logo2.png" alt="" />
+  <section>
+    <div>
+      <img class="logo" src="/assets/logo2.png" alt="" />
+    </div>
+    <form id="subscribeForm" class="form">
+      <div class="formContent">
+        <div class="title">Cadastre-se agora!</div>
+        <div class="subtitle">
+          Seja bem vindo! Preencha os dados e cadastre-se para participar do
+          sorteio dia 14/10.
         </div>
-        <form id="subscribeForm" class="form">
-            <div class="formContent">
-                <div class="title">Cadastre-se agora!</div>
-                <div class="subtitle">
-                    Seja bem vindo! Preencha os dados e cadastre-se para participar do
-                    sorteio dia 14/10.
-                </div>
-                <div class="input-container ic1">
-                    <input required id="firstname" class="input input-field" type="text" placeholder="Nome"
-                        name="name" />
-                </div>
-                <div class="input-container ic2">
-                    <input required type="text" id="phone" class="input input-field" placeholder="Telefone" name="phone"
-                        onkeypress="mask(this, mphone);" onblur="mask(this, mphone);" />
-                </div>
-                <div class="input-container ic2">
-                    <input required type="text" id="cpf" minlength="14" maxlength="14" placeholder="CPF"
-                        class="input input-field" name="cpf" onkeypress="maskCPF(this, mCPF);"
-                        onblur="maskCPF(this, mCPF);" />
-                </div>
-                <div class="input-container ic2">
-                    <label class="labelInput" for="selecao-arquivo">
-                        Anexar foto da nota fiscal!
-                    </label>
-                    <input id="selecao-arquivo" type="file" required />
-                </div>
-            </div>
-            <button type="submit" class="submit">Cadastre-se
-                <div id="loading" class="hide">
-                    <div class="lds-ring">
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                        <div></div>
-                    </div>
-                </div>
-            </button>
-        </form>
-    </section>
+        <div class="input-container ic1">
+          <input
+            required
+            id="firstname"
+            class="input input-field"
+            type="text"
+            placeholder="Nome"
+            name="name"
+          />
+        </div>
+        <div class="input-container ic2">
+          <input
+            required
+            type="text"
+            id="phone"
+            class="input input-field"
+            placeholder="Telefone"
+            name="phone"
+            onkeypress="mask(this, mPhone);"
+            onblur="mask(this, mPhone);"
+          />
+        </div>
+        <div class="input-container ic2">
+          <input
+            required
+            type="text"
+            id="cpf"
+            minlength="14"
+            maxlength="14"
+            placeholder="CPF"
+            class="input input-field"
+            name="cpf"
+            onkeypress="maskCPF(this, mCPF);"
+            onblur="maskCPF(this, mCPF);"
+          />
+        </div>
+        <div class="input-container ic2">
+          <label class="labelInput" for="selecao-arquivo">
+            Anexar foto da nota fiscal!
+          </label>
+          <input id="selecao-arquivo" type="file" accept="image/*" required />
+        </div>
+      </div>
+      <button type="submit" class="submit">
+        Cadastre-se
+        <div id="loading" class="hide">
+          <div class="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+      </button>
+    </form>
+  </section>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
-        import {
-            getFirestore,
-            collection,
-            doc,
-            setDoc,
-        } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-app.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+    } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-firestore.js";
+    import {
+      getStorage,
+      ref,
+      uploadBytes,
+      getDownloadURL,
+    } from "https://www.gstatic.com/firebasejs/9.10.0/firebase-storage.js";
 
-        const toBase64 = (file) =>
-            new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = (error) => reject(error);
-            });
-        const finishSubmit = () => {
-            window.location.href = "/agradecimento/index.html";
-            document.querySelectorAll(".input-field").forEach((el) => {
-                el.value = "";
-            });
-            document.querySelector('#loading').classList.add('hide')
+    const startSubmit = () => {
+      document.querySelector("#loading").classList.remove("hide");
+      document.querySelector(".submit").disabled = true;
+    };
+
+    const finishSubmit = () => {
+      window.location.href = "/agradecimento/index.html";
+      document.querySelectorAll(".input-field").forEach((el) => {
+        el.value = "";
+      });
+      document.querySelector("#loading").classList.add("hide");
+    };
+
+    const saveData = async (data) => {
+      await setDoc(doc(db, "leads", data.cpf), data);
+      finishSubmit();
+    };
+
+    const parseCpf = (value) => {
+      return value.replace(/\./g, "").replace(/\-/g, "");
+    };
+
+    const uploadFile = async (file, fileName) => {
+      const storage = getStorage();
+      const storageRef = ref(storage, fileName);
+      const snapshot = await uploadBytes(storageRef, file);
+      return getDownloadURL(snapshot.ref);
+    };
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAm1YgiZU6Z65LZWJ1Bq2Kc5ficq4y-An0",
+      authDomain: "leadbase-leads.firebaseapp.com",
+      projectId: "leadbase-leads",
+      storageBucket: "leadbase-leads.appspot.com",
+      messagingSenderId: "16583460829",
+      appId: "1:16583460829:web:83f164da92ba611edfd834",
+      measurementId: "G-3W4598CYSL",
+      storageBucket: "gs://leadbase-leads.appspot.com/",
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    document
+      .querySelector("#subscribeForm")
+      .addEventListener("submit", function (evt) {
+        evt.preventDefault();
+
+        startSubmit();
+
+        const formData = new FormData(evt.target);
+        const formProps = {
+          ...Object.fromEntries(formData),
+          createdAt: new Date(),
         };
-        const firebaseConfig = {
-            apiKey: "AIzaSyAm1YgiZU6Z65LZWJ1Bq2Kc5ficq4y-An0",
-            authDomain: "leadbase-leads.firebaseapp.com",
-            projectId: "leadbase-leads",
-            storageBucket: "leadbase-leads.appspot.com",
-            messagingSenderId: "16583460829",
-            appId: "1:16583460829:web:83f164da92ba611edfd834",
-            measurementId: "G-3W4598CYSL",
-        };
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        document
-            .querySelector("#subscribeForm")
-            .addEventListener("submit", function (evt) {
-                evt.preventDefault();
 
-                document.querySelector('#loading').classList.remove('hide')
+        const file = document.querySelector("#selecao-arquivo").files[0];
+        const fileName = parseCpf(formProps.cpf);
 
-                document.querySelector(".submit").disabled = true;
-                const formData = new FormData(evt.target);
-                const formProps = Object.fromEntries(formData);
-                formProps.createdAt = new Date();
-                const file = document.querySelector("#selecao-arquivo").files[0];
-                toBase64(file)
-                    .then((base64Image) => {
-                        formProps.image = base64Image;
-                        setDoc(doc(db, "leads", formProps.cpf), formProps).then(() => {
-                            finishSubmit();
-                        });
-                    })
-                    .catch((err) => {
-                        setDoc(doc(db, "errors", Date.now()), { error: err })
-                        setDoc(doc(db, "leads", formProps.cpf), formProps).then(() => {
-                            finishSubmit();
-                        });
-                    });
-            });
-    </script>
+        uploadFile(file, fileName)
+          .then((imageUrl) => {
+            formProps.image = imageUrl;
+          })
+          .catch((err) => {
+            setDoc(doc(db, "errors", Date.now()), { error: err });
+          })
+          .finally(() => {
+            saveData(formProps);
+          });
+      });
+  </script>
 </body>
+
 <script>
-    function mask(o, f) {
-        setTimeout(function () {
-            var v = mphone(o.value);
-            if (v != o.value) {
-                o.value = v;
-            }
-        }, 1);
+  function mask(o, f) {
+    setTimeout(function () {
+      var v = mPhone(o.value);
+      if (v != o.value) {
+        o.value = v;
+      }
+    }, 1);
+  }
+  function mPhone(v) {
+    var r = v.replace(/\D/g, "");
+    r = r.replace(/^0/, "");
+    if (r.length > 10) {
+      r = r.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+    } else if (r.length > 5) {
+      r = r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+    } else if (r.length > 2) {
+      r = r.replace(/^(\d\d)(\d{0,5})/, "($1) $2");
+    } else {
+      r = r.replace(/^(\d*)/, "($1");
     }
-    function mphone(v) {
-        var r = v.replace(/\D/g, "");
-        r = r.replace(/^0/, "");
-        if (r.length > 10) {
-            r = r.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
-        } else if (r.length > 5) {
-            r = r.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
-        } else if (r.length > 2) {
-            r = r.replace(/^(\d\d)(\d{0,5})/, "($1) $2");
-        } else {
-            r = r.replace(/^(\d*)/, "($1");
-        }
-        return r;
+    return r;
+  }
+  function maskCPF(o, f) {
+    setTimeout(function () {
+      var v = mCPF(o.value);
+      if (v != o.value) {
+        o.value = v;
+      }
+    }, 1);
+  }
+  function mCPF(cpf) {
+    var num = cpf.replace(/[^\d]/g, "");
+    var len = num.length;
+    if (len <= 6) {
+      cpf = num.replace(/(\d{3})(\d{1,3})/g, "$1.$2");
+    } else if (len <= 9) {
+      cpf = num.replace(/(\d{3})(\d{3})(\d{1,3})/g, "$1.$2.$3");
+    } else {
+      cpf = num.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/g, "$1.$2.$3-$4");
     }
-    function maskCPF(o, f) {
-        setTimeout(function () {
-            var v = mCPF(o.value);
-            if (v != o.value) {
-                o.value = v;
-            }
-        }, 1);
-    }
-    function mCPF(cpf) {
-        var num = cpf.replace(/[^\d]/g, "");
-        var len = num.length;
-        if (len <= 6) {
-            cpf = num.replace(/(\d{3})(\d{1,3})/g, "$1.$2");
-        } else if (len <= 9) {
-            cpf = num.replace(/(\d{3})(\d{3})(\d{1,3})/g, "$1.$2.$3");
-        } else {
-            cpf = num.replace(/(\d{3})(\d{3})(\d{3})(\d{1,2})/g, "$1.$2.$3-$4");
-        }
-        return cpf;
-    }
+    return cpf;
+  }
 </script>
 <style>
-    body {
-        align-items: center;
-        background-color: #ffe5d0;
-        display: flex;
-        justify-content: center;
-        min-height: 100vh;
-        padding-bottom: 50px;
-    }
+  body {
+    align-items: center;
+    background-color: #ffe5d0;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding-bottom: 50px;
+  }
 
+  .form {
+    box-sizing: border-box;
+    max-width: 520px;
+  }
+
+  .formContent {
+    padding: 20px;
+    background-color: #ed9488;
+    border-radius: 20px;
+  }
+
+  .title {
+    color: #ffe5d0;
+    font-family: sans-serif;
+    font-size: 36px;
+    font-weight: 600;
+    margin-top: 30px;
+  }
+
+  .logo {
+    height: 60px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 15px;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .labelInput {
+    padding: 16px 130px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #ffe5d0;
+    color: #65657b;
+    text-transform: uppercase;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: sans-serif;
+    font-size: 12px;
+    margin-top: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+
+  .subtitle {
+    color: #ffffff;
+    font-family: sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+
+  .input-container {
+    height: 50px;
+    position: relative;
+    width: 100%;
+  }
+
+  .ic1 {
+    margin-top: 40px;
+  }
+
+  .ic2 {
+    margin-top: 30px;
+  }
+
+  .input {
+    background-color: #ffe5d0;
+    border-radius: 12px;
+    border: 0;
+    box-sizing: border-box;
+    color: #65657b;
+    font-size: 18px;
+    height: 100%;
+    outline: 0;
+    padding: 4px 20px 0;
+    width: 100%;
+  }
+
+  .submit {
+    background-color: #4b59a0;
+    border-radius: 12px;
+    border: 0;
+    box-sizing: border-box;
+    color: #eee;
+    cursor: pointer;
+    font-size: 18px;
+    height: 50px;
+    margin-top: 35px;
+    outline: 0;
+    text-align: center;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .submit:active {
+    background-color: #06b;
+  }
+
+  @media (max-width: 810px) {
     .form {
-        box-sizing: border-box;
-        max-width: 520px;
-    }
-
-    .formContent {
-        padding: 20px;
-        background-color: #ed9488;
-        border-radius: 20px;
-    }
-
-    .title {
-        color: #ffe5d0;
-        font-family: sans-serif;
-        font-size: 36px;
-        font-weight: 600;
-        margin-top: 30px;
-    }
-
-    .logo {
-        height: 60px;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 15px;
-    }
-
-    input[type="file"] {
-        display: none;
+      width: 95%;
+      margin: 0px auto;
     }
 
     .labelInput {
-        padding: 16px 130px;
-        width: 100%;
-        box-sizing: border-box;
-        background-color: #ffe5d0;
-        color: #65657b;
-        text-transform: uppercase;
-        text-align: center;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        font-family: sans-serif;
-        font-size: 12px;
-        margin-top: 10px;
-        margin-left: 0px;
-        margin-right: 0px;
-        border-radius: 20px;
-        cursor: pointer;
-    }
-
-    .subtitle {
-        color: #ffffff;
-        font-family: sans-serif;
-        font-size: 16px;
-        font-weight: 600;
-        margin-top: 10px;
-    }
-
-    .input-container {
-        height: 50px;
-        position: relative;
-        width: 100%;
-    }
-
-    .ic1 {
-        margin-top: 40px;
-    }
-
-    .ic2 {
-        margin-top: 30px;
-    }
-
-    .input {
-        background-color: #ffe5d0;
-        border-radius: 12px;
-        border: 0;
-        box-sizing: border-box;
-        color: #65657b;
-        font-size: 18px;
-        height: 100%;
-        outline: 0;
-        padding: 4px 20px 0;
-        width: 100%;
+      text-align: center;
+      width: 100%;
+      padding: 15px 0px;
+      font-size: 10px;
+      margin-bottom: 10px;
     }
 
     .submit {
-        background-color: #4b59a0;
-        border-radius: 12px;
-        border: 0;
-        box-sizing: border-box;
-        color: #eee;
-        cursor: pointer;
-        font-size: 18px;
-        height: 50px;
-        margin-top: 35px;
-        outline: 0;
-        text-align: center;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+      width: 100%;
+      margin-bottom: 10%;
+    }
+  }
+
+  /* loading */
+  #loading {
+    margin-left: 5px;
+  }
+
+  .lds-ring {
+    display: inline-block;
+    position: relative;
+    width: 20px;
+    height: 20px;
+  }
+
+  .hide {
+    display: none !important;
+  }
+
+  .lds-ring div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    margin: 2px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: #fff transparent transparent transparent;
+  }
+
+  .lds-ring div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+
+  .lds-ring div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+
+  .lds-ring div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
     }
 
-    .submit:active {
-        background-color: #06b;
+    100% {
+      transform: rotate(360deg);
     }
+  }
 
-    @media (max-width: 810px) {
-        .form {
-            width: 95%;
-            margin: 0px auto;
-        }
-
-        .labelInput {
-            text-align: center;
-            width: 100%;
-            padding: 15px 0px;
-            font-size: 10px;
-            margin-bottom: 10px;
-        }
-
-        .submit {
-            width: 100%;
-            margin-bottom: 10%;
-        }
-    }
-
-    /* loading */
-    #loading {
-        margin-left: 5px;
-    }
-
-    .lds-ring {
-        display: inline-block;
-        position: relative;
-        width: 20px;
-        height: 20px;
-    }
-
-    .hide {
-        display: none !important;
-    }
-
-    .lds-ring div {
-        box-sizing: border-box;
-        display: block;
-        position: absolute;
-        width: 20px;
-        height: 20px;
-        margin: 2px;
-        border: 2px solid #fff;
-        border-radius: 50%;
-        animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-        border-color: #fff transparent transparent transparent;
-    }
-
-    .lds-ring div:nth-child(1) {
-        animation-delay: -0.45s;
-    }
-
-    .lds-ring div:nth-child(2) {
-        animation-delay: -0.3s;
-    }
-
-    .lds-ring div:nth-child(3) {
-        animation-delay: -0.15s;
-    }
-
-    @keyframes lds-ring {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    button:disabled,
-    button[disabled] {
-        opacity: 0.7;
-    }
+  button:disabled,
+  button[disabled] {
+    opacity: 0.7;
+  }
 </style>
